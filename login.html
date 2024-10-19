@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"> <!-- ตั้งค่าการเข้ารหัสเป็น UTF-8 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- ตั้งค่าการแสดงผลสำหรับอุปกรณ์เคลื่อนที่ -->
+    <title>Login</title> <!-- ชื่อหน้า -->
+    <style>
+        body {
+            font-family: Arial, sans-serif; /* ตั้งค่าแบบอักษร */
+            background-color: #f4f4f4; /* สีพื้นหลัง */
+            margin: 0; /* ระยะห่างรอบๆ */
+            padding: 0; /* ระยะห่างภายใน */
+            display: flex; /* ใช้ flexbox เพื่อจัดตำแหน่ง */
+            justify-content: center; /* จัดตำแหน่งกลางในแนวนอน */
+            align-items: center; /* จัดตำแหน่งกลางในแนวตั้ง */
+            height: 100vh; /* ความสูงเต็มหน้าจอ */
+            color: #333; /* สีข้อความ */
+        }
+        .login-container {
+            background: white; /* สีพื้นหลังของฟอร์มเข้าสู่ระบบ */
+            padding: 20px; /* ระยะห่างภายใน */
+            border-radius: 8px; /* มุมโค้ง */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* เงาของกล่อง */
+            width: 300px; /* ความกว้าง */
+            text-align: center; /* จัดข้อความกลาง */
+        }
+        h2 {
+            margin-bottom: 20px; /* ระยะห่างด้านล่าง */
+            color: #4CAF50; /* สีข้อความ */
+        }
+        input {
+            width: calc(100% - 20px); /* ความกว้างของช่องกรอกข้อมูล */
+            padding: 10px; /* ระยะห่างภายใน */
+            margin: 5px 0; /* ระยะห่างด้านบนและล่าง */
+            border: 1px solid #ddd; /* กรอบของช่องกรอกข้อมูล */
+            border-radius: 4px; /* มุมโค้ง */
+        }
+        button {
+            width: 100%; /* ความกว้างของปุ่ม */
+            padding: 10px; /* ระยะห่างภายใน */
+            background-color: #4CAF50; /* สีพื้นหลังของปุ่ม */
+            color: white; /* สีข้อความในปุ่ม */
+            border: none; /* ไม่มีกรอบ */
+            border-radius: 4px; /* มุมโค้ง */
+            cursor: pointer; /* เปลี่ยนเคอร์เซอร์เมื่อชี้ไปที่ปุ่ม */
+        }
+        button:hover {
+            background-color: #45a049; /* สีพื้นหลังเมื่อชี้ที่ปุ่ม */
+        }
+        #responseMessage {
+            color: red; /* สีข้อความสำหรับแจ้งเตือน */
+            margin-top: 10px; /* ระยะห่างด้านบน */
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Login</h2> <!-- หัวข้อ -->
+        <form id="loginForm"> <!-- ฟอร์มเข้าสู่ระบบ -->
+            <input type="text" id="name" name="name" placeholder="Username" required> <!-- ช่องกรอกชื่อผู้ใช้ -->
+            <input type="password" id="password" name="password" placeholder="Password" required> <!-- ช่องกรอกรหัสผ่าน -->
+            <button type="submit">Login</button> <!-- ปุ่มเข้าสู่ระบบ -->
+        </form>
+        <p id="responseMessage"></p> <!-- พื้นที่สำหรับแสดงข้อความแจ้งเตือน -->
+    </div>
+
+    <script>
+        // เพิ่ม event listener สำหรับฟอร์ม
+        document.getElementById("loginForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // หยุดการ submit ฟอร์มแบบปกติ
+
+            var formData = {
+                name: document.getElementById("name").value, // รับค่าจากช่องกรอกชื่อผู้ใช้
+                password: document.getElementById("password").value // รับค่าจากช่องกรอกรหัสผ่าน
+            };
+
+            fetch("/login", { // ส่งคำขอ POST ไปที่เส้นทาง /login
+                method: "POST", // วิธีการ POST
+                headers: {
+                    "Content-Type": "application/json" // กำหนดประเภทข้อมูลเป็น JSON
+                },
+                body: JSON.stringify(formData) // แปลงข้อมูลฟอร์มเป็น JSON
+            })
+            .then(response => {
+                if (response.ok) { // ตรวจสอบว่าคำขอสำเร็จ
+                    window.location.href = "/products.html"; // เมื่อเข้าสู่ระบบสำเร็จ เปลี่ยนเส้นทางไปที่หน้า products
+                } else {
+                    // แจ้งเตือนเมื่อข้อมูลไม่ถูกต้อง
+                    return response.json().then(data => {
+                        // ตรวจสอบว่า data มีข้อความที่ต้องการแสดงหรือไม่
+                        document.getElementById("responseMessage").innerText = data.message || "ชื่อ หรือ รหัสผ่านไม่ถูกต้อง."; // แสดงข้อความแจ้งเตือน
+                    });
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error); // แสดงข้อผิดพลาดใน console
+                document.getElementById("responseMessage").innerText = "ชื่อ หรือ รหัสผ่านไม่ถูกต้อง."; // แสดงข้อความข้อผิดพลาด
+            });
+        });
+    </script>
+</body>
+</html>

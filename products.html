@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"> <!-- ตั้งค่าการเข้ารหัสเป็น UTF-8 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- ตั้งค่าการแสดงผลสำหรับอุปกรณ์เคลื่อนที่ -->
+    <title>Products</title> <!-- ชื่อหน้า -->
+    <style>
+        body {
+            font-family: 'Arial', sans-serif; /* ตั้งค่าแบบอักษร */
+            margin: 50px; /* ระยะห่างรอบๆ */
+            background-color: #f9f9f9; /* สีพื้นหลัง */
+            color: #333; /* สีข้อความ */
+        }
+        h2 {
+            color: #4CAF50; /* สีหัวข้อ */
+            text-align: center; /* จัดกลาง */
+        }
+        .container {
+            display: flex; /* ใช้ flexbox สำหรับจัดตำแหน่ง */
+            justify-content: space-between; /* จัดให้มีระยะห่างเท่าๆ กัน */
+            align-items: flex-start; /* จัดแนวให้เริ่มต้นที่ด้านบน */
+            gap: 30px; /* ระยะห่างระหว่างช่อง */
+        }
+        table {
+            width: 70%; /* ความกว้างของตาราง */
+            border-collapse: collapse; /* รวมกรอบตาราง */
+            margin-bottom: 20px; /* ระยะห่างด้านล่าง */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* เงาของตาราง */
+            border-radius: 8px; /* มุมโค้ง */
+            overflow: hidden; /* ซ่อนเนื้อหาที่เกินขอบเขต */
+        }
+        th, td {
+            border: 1px solid #ddd; /* กรอบตาราง */
+            padding: 12px; /* ระยะห่างภายใน */
+            text-align: left; /* จัดแนวข้อความ */
+        }
+        th {
+            background-color: #4CAF50; /* สีพื้นหลังของหัวตาราง */
+            color: white; /* สีข้อความในหัวตาราง */
+        }
+        th:hover {
+            background-color: #45a049; /* สีพื้นหลังเมื่อชี้ที่หัวตาราง */
+        }
+        input {
+            padding: 10px; /* ระยะห่างภายใน */
+            margin: 5px; /* ระยะห่างรอบๆ */
+            border: 1px solid #ddd; /* กรอบช่องกรอกข้อมูล */
+            border-radius: 4px; /* มุมโค้ง */
+            width: calc(100% - 22px); /* ความกว้างของช่องกรอกข้อมูล */
+        }
+        button {
+            padding: 10px 15px; /* ระยะห่างภายใน */
+            color: white; /* สีข้อความในปุ่ม */
+            border: none; /* ไม่มีกรอบ */
+            border-radius: 4px; /* มุมโค้ง */
+            cursor: pointer; /* เปลี่ยนเคอร์เซอร์เมื่อชี้ไปที่ปุ่ม */
+            margin-top: 10px; /* ระยะห่างด้านบน */
+            transition: background-color 0.3s; /* การเปลี่ยนสีพื้นหลังเมื่อชี้ไปที่ปุ่ม */
+        }
+        button:hover {
+            opacity: 0.9; /* ทำให้สีของปุ่มลดลงเล็กน้อยเมื่อชี้ */
+        }
+        .add-product, .update-product {
+            margin-top: 20px; /* ระยะห่างด้านบน */
+            width: 300px; /* ความกว้าง */
+            padding: 20px; /* ระยะห่างภายใน */
+            background-color: #fff; /* สีพื้นหลัง */
+            border-radius: 8px; /* มุมโค้ง */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* เงาของกล่อง */
+        }
+        .logout {
+            background-color: #f44336; /* สีพื้นหลังสำหรับปุ่มออกจากระบบ */
+            position: absolute; /* ตั้งตำแหน่งแบบ absolute */
+            top: 20px; /* ระยะห่างจากด้านบน */
+            right: 30px; /* ระยะห่างจากด้านขวา */
+            margin-bottom: 20px; /* ระยะห่างด้านล่าง */
+        }
+        .logout:hover {
+            background-color: #d32f2f; /* สีพื้นหลังเมื่อชี้ที่ปุ่มออกจากระบบ */
+        }
+        .edit-button {
+            background-color: #acaba8; /* สีพื้นหลังสำหรับปุ่มแก้ไข */
+            transition: background-color 0.3s; /* การเปลี่ยนสีเมื่อชี้ */
+        }
+        .edit-button:hover {
+            background-color: #acaba8; /* สีพื้นหลังเมื่อชี้ที่ปุ่มแก้ไข */
+        }
+        .delete-button {
+            background-color: #f44336; /* สีพื้นหลังสำหรับปุ่มลบ */
+            transition: background-color 0.3s; /* การเปลี่ยนสีเมื่อชี้ */
+        }
+        .delete-button:hover {
+            background-color: #d32f2f; /* สีพื้นหลังเมื่อชี้ที่ปุ่มลบ */
+        }
+        .add-button {
+            background-color: #4CAF50; /* สีพื้นหลังสำหรับปุ่มเพิ่ม */
+            transition: background-color 0.3s; /* การเปลี่ยนสีเมื่อชี้ */
+        }
+        .add-button:hover {
+            background-color: #45a049; /* สีพื้นหลังเมื่อชี้ที่ปุ่มเพิ่ม */
+        }
+        .save-button {
+            background-color: #4CAF50; /* สีพื้นหลังสำหรับปุ่มบันทึก */
+            transition: background-color 0.3s; /* การเปลี่ยนสีเมื่อชี้ */
+        }
+        .save-button:hover {
+            background-color: #4CAF50; /* สีพื้นหลังเมื่อชี้ที่ปุ่มบันทึก */
+        }
+        .cancel-button {
+            background-color: #acaba8; /* สีพื้นหลังสำหรับปุ่มยกเลิก */
+            transition: background-color 0.3s; /* การเปลี่ยนสีเมื่อชี้ */
+        }
+        .cancel-button:hover {
+            background-color: #acaba8; /* สีพื้นหลังเมื่อชี้ที่ปุ่มยกเลิก */
+        }
+        .update-product {
+            display: none; /* ซ่อนฟอร์มการอัปเดตผลิตภัณฑ์โดยเริ่มต้น */
+        }
+    </style>
+</head>
+<body>
+    <h2>Product List</h2> <!-- หัวข้อของหน้า -->
+    <button class="logout" onclick="logout()">Logout</button> <!-- ปุ่มออกจากระบบ -->
+    
+    <div class="container"> <!-- กล่องบรรจุ -->
+        <table id="productTable"> <!-- ตารางแสดงรายการผลิตภัณฑ์ -->
+            <thead>
+                <tr>
+                    <th>ID</th> <!-- หัวข้อ ID -->
+                    <th>Good</th> <!-- หัวข้อผลิตภัณฑ์ -->
+                    <th>Price</th> <!-- หัวข้อราคา -->
+                    <th>Qty</th> <!-- หัวข้อจำนวน -->
+                    <th>Actions</th> <!-- หัวข้อการกระทำ -->
+                </tr>
+            </thead>
+            <tbody>
+                <!-- รายการผลิตภัณฑ์จะถูกแทรกที่นี่ -->
+            </tbody>
+        </table>
+
+        <div>
+            <div class="add-product" id="addProductForm"> <!-- ฟอร์มเพิ่มผลิตภัณฑ์ -->
+                <h3>Add Product</h3> <!-- หัวข้อสำหรับฟอร์มเพิ่มผลิตภัณฑ์ -->
+                <div class="form-row">
+                    <input type="text" id="newGood" placeholder="Good" required> <!-- ช่องกรอกชื่อผลิตภัณฑ์ -->
+                    <input type="number" id="newPrice" placeholder="Price" required> <!-- ช่องกรอกราคา -->
+                    <input type="number" id="newQty" placeholder="Qty" required> <!-- ช่องกรอกจำนวน -->
+                    <button class="add-button" onclick="addProduct()">Add</button> <!-- ปุ่มเพิ่มผลิตภัณฑ์ -->
+                </div>
+            </div>
+
+            <div class="update-product" id="updateProductForm"> <!-- ฟอร์มอัปเดตผลิตภัณฑ์ -->
+                <h3>Edit Product</h3> <!-- หัวข้อสำหรับฟอร์มอัปเดตผลิตภัณฑ์ -->
+                <div class="form-row">
+                    <input type="text" id="updateGood" placeholder="Good" required> <!-- ช่องกรอกชื่อผลิตภัณฑ์สำหรับการอัปเดต -->
+                    <input type="number" id="updatePrice" placeholder="Price" required> <!-- ช่องกรอกราคา -->
+                    <input type="number" id="updateQty" placeholder="Qty" required> <!-- ช่องกรอกจำนวน -->
+                    <button class="save-button" onclick="updateProduct()">Save</button> <!-- ปุ่มบันทึกการอัปเดต -->
+                    <button class="cancel-button" onclick="cancelUpdate()">Cancel</button> <!-- ปุ่มยกเลิกการอัปเดต -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUpdateID = null; // ตัวแปรสำหรับเก็บ ID ของผลิตภัณฑ์ที่กำลังอัปเดต
+
+        function loadProducts() { // ฟังก์ชันโหลดผลิตภัณฑ์
+            fetch("/products") // ดึงข้อมูลผลิตภัณฑ์จาก API
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.querySelector("#productTable tbody");
+                    tableBody.innerHTML = ""; // เคลียร์เนื้อหาที่มีอยู่
+                    data.forEach(product => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td>${product.g_id}</td> <!-- แสดง ID ของผลิตภัณฑ์ -->
+                            <td>${product.good}</td> <!-- แสดงชื่อผลิตภัณฑ์ -->
+                            <td>${product.price}</td> <!-- แสดงราคา -->
+                            <td>${product.qty}</td> <!-- แสดงจำนวน -->
+                            <td>
+                                <button class="edit-button" onclick="prepareEditProduct(${product.g_id}, '${product.good}', ${product.price}, ${product.qty})">Edit</button> <!-- ปุ่มแก้ไข -->
+                                <button class="delete-button" onclick="confirmDeleteProduct(${product.g_id})">Delete</button> <!-- ปุ่มลบ -->
+                            </td>
+                        `;
+                        tableBody.appendChild(row); // เพิ่มแถวใหม่ในตาราง
+                    });
+                })
+                .catch(error => {
+                    console.error("Error loading products:", error); // แสดงข้อผิดพลาดในคอนโซล
+                });
+        }
+
+        function addProduct() { // ฟังก์ชันเพิ่มผลิตภัณฑ์
+            const newGood = document.getElementById("newGood").value; // รับค่าชื่อผลิตภัณฑ์
+            const newPrice = document.getElementById("newPrice").value; // รับค่าราคา
+            const newQty = document.getElementById("newQty").value; // รับค่าจำนวน
+
+            if (!newGood || !newPrice || !newQty) { // ตรวจสอบให้แน่ใจว่ากรอกข้อมูลครบ
+                alert("โปรดใส่ข้อมูลให้ครบนะจ๊ะ."); // แจ้งเตือนถ้าข้อมูลไม่ครบ
+                return;
+            }
+
+            const productData = {
+                good: newGood,
+                price: parseInt(newPrice),
+                qty: parseInt(newQty)
+            };
+
+            fetch("/products", { // ส่งข้อมูลไปยัง API
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(productData)
+            })
+            .then(response => {
+                if (response.ok) {
+                    loadProducts(); // โหลดผลิตภัณฑ์ใหม่
+
+                    // เคลียร์ช่องกรอกข้อมูล
+                    document.getElementById("newGood").value = "";
+                    document.getElementById("newPrice").value = "";
+                    document.getElementById("newQty").value = "";
+                }
+            })
+            .catch(error => {
+                console.error("Error adding product:", error); // แสดงข้อผิดพลาดในคอนโซล
+            });
+        }
+
+        function prepareEditProduct(id, good, price, qty) { // ฟังก์ชันเตรียมข้อมูลสำหรับการอัปเดต
+            currentUpdateID = id; // เก็บ ID ของผลิตภัณฑ์ที่กำลังอัปเดต
+
+            // ซ่อนฟอร์มเพิ่มผลิตภัณฑ์และแสดงฟอร์มอัปเดต
+            document.getElementById("addProductForm").style.display = "none"; 
+            document.getElementById("updateProductForm").style.display = "block"; 
+
+            // แสดงข้อมูลที่มีอยู่ในช่องกรอกข้อมูลสำหรับการอัปเดต
+            document.getElementById("updateGood").value = good;
+            document.getElementById("updatePrice").value = price;
+            document.getElementById("updateQty").value = qty;
+        }
+
+        function updateProduct() { // ฟังก์ชันอัปเดตผลิตภัณฑ์
+            const updateGood = document.getElementById("updateGood").value; // รับค่าชื่อผลิตภัณฑ์ที่อัปเดต
+            const updatePrice = document.getElementById("updatePrice").value; // รับค่าราคาที่อัปเดต
+            const updateQty = document.getElementById("updateQty").value; // รับค่าจำนวนที่อัปเดต
+
+            if (!updateGood || !updatePrice || !updateQty) { // ตรวจสอบให้แน่ใจว่ากรอกข้อมูลครบ
+                alert("โปรดใส่ข้อมูลให้ครบนะจ๊ะ."); // แจ้งเตือนถ้าข้อมูลไม่ครบ
+                return;
+            }
+
+            const productData = {
+                g_id: currentUpdateID, // ID ของผลิตภัณฑ์ที่อัปเดต
+                good: updateGood,
+                price: parseInt(updatePrice),
+                qty: parseInt(updateQty)
+            };
+
+            fetch("/products", { // ส่งข้อมูลไปยัง API
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(productData)
+            })
+            .then(response => {
+                if (response.ok) {
+                    loadProducts(); // โหลดผลิตภัณฑ์ใหม่
+                    cancelUpdate(); // รีเซ็ตฟอร์มอัปเดต
+                }
+            })
+            .catch(error => {
+                console.error("Error updating product:", error); // แสดงข้อผิดพลาดในคอนโซล
+            });
+        }
+
+        function confirmDeleteProduct(id) { // ฟังก์ชันยืนยันการลบผลิตภัณฑ์
+            if (confirm("คุณต้องการลบใช่หรือไม่?")) {
+                deleteProduct(id); // เรียกฟังก์ชันลบผลิตภัณฑ์
+            }
+        }
+
+        function deleteProduct(id) { // ฟังก์ชันลบผลิตภัณฑ์
+            const productData = {
+                g_id: id // เก็บ ID ของผลิตภัณฑ์ที่ต้องการลบ
+            };
+
+            fetch("/products", { // ส่งข้อมูลไปยัง API
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(productData)
+            })
+            .then(response => {
+                if (response.ok) {
+                    loadProducts(); // โหลดผลิตภัณฑ์ใหม่
+                }
+            })
+            .catch(error => {
+                console.error("Error deleting product:", error); // แสดงข้อผิดพลาดในคอนโซล
+            });
+        }
+
+        function cancelUpdate() { // ฟังก์ชันยกเลิกการอัปเดต
+            currentUpdateID = null; // รีเซ็ต ID
+            document.getElementById("addProductForm").style.display = "block"; // แสดงฟอร์มเพิ่มผลิตภัณฑ์
+            document.getElementById("updateProductForm").style.display = "none"; // ซ่อนฟอร์มอัปเดตผลิตภัณฑ์
+        }
+
+        function logout() { // ฟังก์ชันออกจากระบบ
+            window.location.href = "/login.html"; // เปลี่ยนไปยังหน้าลงชื่อเข้าใช้
+        }
+
+        // โหลดผลิตภัณฑ์เมื่อหน้าโหลด
+        loadProducts();
+    </script>
+</body>
+</html>
